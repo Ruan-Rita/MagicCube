@@ -167,46 +167,37 @@ export default class RenderCube {
         const degree = 90;
 
         this.gui.add(this.options,'ActionPurple').onChange(value => {
-            this.movePurple()
+            this.moveImproved(this.axesPurple.axes.name);
             zPurple += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(zPurple,0,0, "XYZ")
-            console.log('zPurple', zPurple);
-            console.log('euler', euler);
             this.axesPurple.axes.setRotationFromEuler(euler)
-            console.log('sdadasdasdasdasdasdasd', this.axesPurple.axes.rotation);
-
         });
         this.gui.add(this.options,'ActionRed').onChange(value => {
-            this.moveRed()
+            this.moveImproved(this.axesRed.axes.name);
             zRed += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(0,zRed,0, "XYZ")
             this.axesRed.axes.setRotationFromEuler(euler)
-            console.log('sdadasdasdasdasdasdasd', this.axesRed.axes.rotation);
         });
         this.gui.add(this.options,'ActionGray').onChange(value => {
-            this.moveGray()
+            this.moveImproved(this.axesGray.axes.name);
             zGray += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(0,zGray,0, "XYZ")
             this.axesGray.axes.setRotationFromEuler(euler)
         });
         this.gui.add(this.options,'ActionBrown').onChange(value => {
-            // this.moveBrownImproved();
             this.moveImproved(this.axesBrown.axes.name);
-
             zBrown += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(0,0,zBrown, "XYZ")
             this.axesBrown.axes.setRotationFromEuler(euler)
         });
         this.gui.add(this.options,'ActionYellow').onChange(value => {
-            // this.moveYellowImproved()
             this.moveImproved(this.axesYellow.axes.name);
-
             zYellow += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(zYellow,0,0, "XYZ")
             this.axesYellow.axes.setRotationFromEuler(euler)
         });
         this.gui.add(this.options,'ActionGreen').onChange(value => {
-            this.moveGreen();
+            this.moveImproved(this.axesGreen.axes.name);
             zGreen += THREE.MathUtils.degToRad(degree);
             const euler = new THREE.Euler(0,0,zGreen, "XYZ")
             this.axesGreen.axes.setRotationFromEuler(euler)
@@ -227,7 +218,7 @@ export default class RenderCube {
      * [4][C][6] -> [8][C][N] -> [6][C][4] -> [N][C][8] -> 0º
      * [7][8][9]    [9][6][3]    [3][N][1]    [1][4][7]
      */
-    getNumberCubeByAngle(numberCube, axesColor) {
+    getNumberCubeByAngle(numberCube, axesColor, invert = false) {
         // RULES AXES
         // gray yellow green -> right
         // red purple brown -> left
@@ -249,6 +240,19 @@ export default class RenderCube {
         const direction = this.determineNorthDirection(angle);
         if (direction === 'top') return numberCube;
         if (direction === 'right') {
+            if (invert) {
+                switch (numberCube) {
+                    case 1: return 3;
+                    case 2: return 6;
+                    case 3: return 9;
+                    case 4: return 2;
+                    case 6: return 8;
+                    case 7: return 1;
+                    case 8: return 4;
+                    case 9: return 7;
+                    default: return numberCube;
+                }
+            }
             switch (numberCube) {
                 case 1: return 7;
                 case 2: return 4;
@@ -262,6 +266,19 @@ export default class RenderCube {
             }
         }
         if (direction === 'bottom') {
+            if (invert) {
+                switch (numberCube) {
+                    case 1: return 9;
+                    case 2: return 8;
+                    case 3: return 7;
+                    case 4: return 6;
+                    case 6: return 4;
+                    case 7: return 3;
+                    case 8: return 2;
+                    case 9: return 1;
+                    default: return numberCube;
+                }
+            }
             switch (numberCube) {
                 case 1: return 9;
                 case 2: return 8;
@@ -275,6 +292,19 @@ export default class RenderCube {
             }
         }
         if (direction === 'left') {
+            if (invert) {
+                switch (numberCube) {
+                    case 1: return 7;
+                    case 2: return 4;
+                    case 3: return 1;
+                    case 4: return 8;
+                    case 6: return 2;
+                    case 7: return 9;
+                    case 8: return 6;
+                    case 9: return 3;
+                    default: return numberCube;
+                }
+            }
             switch (numberCube) {
                 case 1: return 3;
                 case 2: return 6;
@@ -340,7 +370,12 @@ export default class RenderCube {
             let relationName = `${related}${arrayAxes[i].axes.name}`;
 
             let nameRelated = this.positionRelation[related].filter(searchRelated => searchRelated === arrayAxes[i].axes.name)
+            /**
+             * Default is when 2 is at top
+             */
+            const convertNumberRelatedToDefault = this.getNumberCubeByAngle(numberPosition,this[`axes${related}`], true)
             console.log('Related: ' + related+' numero desejado desse eixo: '+numberPosition);
+            console.log('Convertido: '+convertNumberRelatedToDefault);
             console.log('Estou na procura de quem?: ' + arrayAxes[i].axes.name);
             console.log('Name Related: '+nameRelated);
             let currentPositionAxes = this.positionAxes[`axes${nameRelated}`];
@@ -348,7 +383,7 @@ export default class RenderCube {
             let relation = this.positionRelation[relationName];
 
             console.log('relation', relation);
-            let numberCubeThisCurrentAxes = relation[numberPosition];
+            let numberCubeThisCurrentAxes = relation[convertNumberRelatedToDefault];
 
             if (numberCubeThisCurrentAxes) {
                 for (let iterate = 0; iterate < arrayAxes[i].axes.children.length; iterate++) {
