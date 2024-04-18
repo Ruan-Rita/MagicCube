@@ -52,7 +52,7 @@ scene.add(axesHelper);
 camera.position.set(5,3,18)
 controls.update();
 const renderCube = new RenderCube(scene, gui, camera);
-const {axesPurple, axesYellow, axesBrown} = renderCube.render()
+const {mainCube, axesPurple, axesYellow, axesBrown} = renderCube.render()
 
 window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth / this.window.innerHeight;
@@ -63,7 +63,10 @@ window.addEventListener('resize', function() {
 renderer.setClearColor( 0x000000, 0 );
 
 // animation
+let speed = 0.005;
 function animate(time) {
     renderer.render(scene, camera)
+    // mainCube.box.rotateY(speed)
+    // mainCube.box.rotateX(speed)
 }
 renderer.setAnimationLoop(animate)
