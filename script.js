@@ -66,7 +66,7 @@ renderer.setClearColor( 0x000000, 0 );
 let speed = 0.005;
 function animate(time) {
     renderer.render(scene, camera)
-    // mainCube.box.rotateY(speed)
-    // mainCube.box.rotateX(speed)
+    mainCube.box.rotateY(speed)
+    mainCube.box.rotateX(speed)
 }
 renderer.setAnimationLoop(animate)

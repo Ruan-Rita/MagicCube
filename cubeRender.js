@@ -1,4 +1,9 @@
 import * as THREE from 'three'
+import arrowUpBackground from  './assets/arrow_up.png'
+import arrowDownBackground from  './assets/arrow_down.png'
+import arrowLeftBackground from  './assets/arrow_left.png'
+import arrowRightBackground from  './assets/arrow_right.png'
+
 
 export default class RenderCube {
 
@@ -20,6 +25,8 @@ export default class RenderCube {
         this.camera = camera
         this.gui.add(this.options,"Size",1, 5)
         this.gui.add(this.options,"Spacing",.2, 1)
+        this.textureLoader = new THREE.TextureLoader()
+
     }
 
     zBrown = 0 // left
@@ -28,6 +35,13 @@ export default class RenderCube {
     zPurple = 0 // left
     zGray = 0 // right
     zGreen = 0 // right
+
+    zAxisBrown = 0 // left
+    zAxisRed = 0 // left
+    zAxisYellow = 0 // right
+    zAxisPurple = 0 // left
+    zAxisGray = 0 // right
+    zAxisGreen = 0 // right
     /**
      * [1] [2] [3]
      * [4] [A] [6]
@@ -105,7 +119,17 @@ export default class RenderCube {
     render() {
         this.mainCube = this.createBox(false, 'black');
         this.mainCube.box.material.wireframe = true;
-        this.scene.add(this.mainCube.box)
+        this.scene.add(this.mainCube.box);
+
+        // const box2MultiMaterial = [
+        //     new THREE.MeshStandardMaterial({color: 'black'}),
+        //     // new THREE.MeshStandardMaterial({color: 'black'}),
+        //     new THREE.MeshStandardMaterial({color: 'black'}),
+        //     new THREE.MeshStandardMaterial({color: 'black'}),
+        //     // new THREE.MeshStandardMaterial({color: 'black'}),
+        //     new THREE.MeshStandardMaterial({color: 'black'}),
+        // ]
+        // const material = new THREE.MultiMaterial(box2MultiMaterial);
 
         this.axesRed = this.createBox(this.mainCube.box, 'red',{x: 0, y: this.margem, z: 0}, true);
         this.axesPurple = this.createBox(this.mainCube.box, 'purple',{x: this.margem, y: 0, z: 0}, true);
@@ -113,6 +137,25 @@ export default class RenderCube {
         this.axesBrown = this.createBox(this.mainCube.box, 'brown',{x: 0, y: 0, z: this.margem}, true);
         this.axesYellow = this.createBox(this.mainCube.box, 'yellow',{x: -this.margem, y: 0, z: 0}, true);
         this.axesGreen = this.createBox(this.mainCube.box, 'green',{x: 0, y: 0, z: -this.margem}, true);
+
+        this.axesRed.box.material.setValues({
+            map: this.textureLoader.load(arrowLeftBackground)
+        })
+        this.axesPurple.box.material.setValues({
+            map: this.textureLoader.load(arrowUpBackground)
+        })
+        this.axesGray.box.material.setValues({
+            map: this.textureLoader.load(arrowRightBackground)
+        })
+        this.axesBrown.box.material.setValues({
+            map: this.textureLoader.load(arrowUpBackground)
+        })
+        this.axesYellow.box.material.setValues({
+            map: this.textureLoader.load(arrowUpBackground)
+        })
+        this.axesGreen.box.material.setValues({
+            map: this.textureLoader.load(arrowUpBackground)
+        })
 
         // names
         this.axesRed.axes.name = this.positionAxes.axesRed.name;
@@ -154,17 +197,17 @@ export default class RenderCube {
 
         this.guiAxesAction()
 
-        // setInterval(() => {
-        //     let colorName = [
-        //         'Red',
-        //         'Gray',
-        //         'Green',
-        //         'Yellow',
-        //         'Purple',
-        //         'Brown'
-        //     ]
-        //     this.renderAction(this[`axes${colorName[Math.floor(Math.random() * colorName.length)]}`])
-        // },500)
+        setInterval(() => {
+            let colorName = [
+                'Red',
+                'Gray',
+                'Green',
+                'Yellow',
+                'Purple',
+                'Brown'
+            ]
+            this.renderAction(this[`axes${colorName[Math.floor(Math.random() * colorName.length)]}`])
+        },800)
 
         return this;
     }
@@ -176,12 +219,18 @@ export default class RenderCube {
         });
         this.gui.add(this.options,'ActionRed').onChange(value => {
             this.renderAction(this.axesRed);
+            console.log("AFTER ROTATE Red: "+this.determineNorthDirection(this.zRed));
+            console.log("AFTER ROTATE Red: "+this.getNumberCubeByAngle(3,this.axesRed));
+            console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesRed.axes.rotation.y));
         });
         this.gui.add(this.options,'ActionGray').onChange(value => {
             this.renderAction(this.axesGray);
         });
         this.gui.add(this.options,'ActionBrown').onChange(value => {
             this.renderAction(this.axesBrown);
+            console.log("AFTER ROTATE Brown: "+this.determineNorthDirection(this.zBrown));
+            console.log("AFTER ROTATE Brown: "+this.getNumberCubeByAngle(3,this.axesBrown));
+            console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesBrown.axes.rotation.z));
         });
         this.gui.add(this.options,'ActionYellow').onChange(value => {
             this.renderAction(this.axesYellow);
@@ -199,7 +248,7 @@ export default class RenderCube {
         // rule to degree
         this[`z${axesColor.axes.name}`] += THREE.MathUtils.degToRad(degree);
         if (Math.abs(THREE.MathUtils.radToDeg(this[`z${axesColor.axes.name}`])) === 360 ) {
-            this[`z${axesColor.axes.name}`] = THREE.MathUtils.degToRad(0);
+            this[`z${axesColor.axes.name}`] = 0;
         }
 
         // rule to invert degree
@@ -208,16 +257,25 @@ export default class RenderCube {
             degree = -(degree)
         }
 
+        this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree)
+        if (Math.abs(this[`zAxis${axesColor.axes.name}`]) === 360 ) {
+            this[`zAxis${axesColor.axes.name}`] = 0;
+        }
+        console.log('this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree): '+this[`zAxis${axesColor.axes.name}`]);
+        console.log('this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree): '+THREE.MathUtils.radToDeg(this[`z${axesColor.axes.name}`]));
         // decide which axis i will rotate
         let x = 0, y = 0 , z = 0;
         if ([this.axesYellow.axes.name, this.axesPurple.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            x = THREE.MathUtils.degToRad(THREE.MathUtils.radToDeg(degreeCurrent) + degree)
+            // x = degreeCurrent + (THREE.MathUtils.degToRad(degree))
+            x = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
         }
         if ([this.axesRed.axes.name, this.axesGray.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            y = THREE.MathUtils.degToRad(THREE.MathUtils.radToDeg(degreeCurrent) + degree)
+            // y = degreeCurrent + (THREE.MathUtils.degToRad(degree))
+            y = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
         }
         if ([this.axesGreen.axes.name, this.axesBrown.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            z = THREE.MathUtils.degToRad(THREE.MathUtils.radToDeg(degreeCurrent) + degree)
+            // z = degreeCurrent + (THREE.MathUtils.degToRad(degree))
+            z = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
         }
 
         const euler = new THREE.Euler(x,y,z, "XYZ")
@@ -243,8 +301,21 @@ export default class RenderCube {
      * 0º <- [4][C][6] <- [8][C][N] <- [6][C][4] <- [N][C][8]
      *       [7][8][9]    [9][6][3]    [3][N][1]    [1][4][7]
      */
+    getNumberCubeByAngleFixColorInverted(numberCube, axesColor, invert = false) {
+
+    }
     getNumberCubeByAngle(numberCube, axesColor, invert = false) {
-        const direction = this.determineNorthDirection(this[`z${axesColor.axes.name}`]);
+        // rule to invert degree
+        let invertInvertedAngle = false
+        const invertSignalRule = [this.axesRed.axes.name, this.axesBrown.axes.name, this.axesPurple.axes.name]
+        if (invertSignalRule.indexOf(axesColor.axes.name) !== -1) {
+            invertInvertedAngle = true
+        }
+
+        let direction = this.determineNorthDirection(this[`z${axesColor.axes.name}`]);
+        // if (invertInvertedAngle && direction === 'right') direction = 'left'
+        // if (invertInvertedAngle && direction === 'left') direction = 'right'
+
         console.log('DIRECTION #X#: ' + direction);
         if (direction === 'top') return numberCube;
         if (direction === 'right') {
