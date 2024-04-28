@@ -1,27 +1,29 @@
 import * as THREE from 'three'
-import arrowUpBackground from  './assets/arrow_up.png'
-import arrowDownBackground from  './assets/arrow_down.png'
-import arrowLeftBackground from  './assets/arrow_left.png'
-import arrowRightBackground from  './assets/arrow_right.png'
+import arrowUpBackground from  '../assets/arrow_up.png'
+import arrowDownBackground from  '../assets/arrow_down.png'
+import arrowLeftBackground from  '../assets/arrow_left.png'
+import arrowRightBackground from  '../assets/arrow_right.png'
+import {renderMaterialByNumberCube} from './CubeColors'
 
-
-export default class RenderCube {
+export default class MagicCube {
 
     options = {
         "Size": 2,
-        "Spacing": .4,
+        "Spacing": .1,
         "ActionPurple": false,
         "ActionRed": false,
         "ActionGray": false,
         "ActionBrown": false,
         "ActionYellow": false,
         "ActionGreen": false,
+        "ActionPurpleVoltar": false,
     }
     margem = this.options.Spacing + this.options.Size
 
     constructor(scene, gui, camera) {
         this.scene = scene
         this.gui = gui
+        this.timeAnimation = 700
         this.camera = camera
         this.gui.add(this.options,"Size",1, 5)
         this.gui.add(this.options,"Spacing",.2, 1)
@@ -121,43 +123,33 @@ export default class RenderCube {
         this.mainCube.box.material.wireframe = true;
         this.scene.add(this.mainCube.box);
 
-        // const box2MultiMaterial = [
-        //     new THREE.MeshStandardMaterial({color: 'black'}),
-        //     // new THREE.MeshStandardMaterial({color: 'black'}),
-        //     new THREE.MeshStandardMaterial({color: 'black'}),
-        //     new THREE.MeshStandardMaterial({color: 'black'}),
-        //     // new THREE.MeshStandardMaterial({color: 'black'}),
-        //     new THREE.MeshStandardMaterial({color: 'black'}),
-        // ]
-        // const material = new THREE.MultiMaterial(box2MultiMaterial);
 
-        this.axesRed = this.createBox(this.mainCube.box, 'red',{x: 0, y: this.margem, z: 0}, true);
-        this.axesPurple = this.createBox(this.mainCube.box, 'purple',{x: this.margem, y: 0, z: 0}, true);
-        this.axesGray = this.createBox(this.mainCube.box, 'gray',{x: 0, y: -this.margem, z: 0}, true);
-        this.axesBrown = this.createBox(this.mainCube.box, 'brown',{x: 0, y: 0, z: this.margem}, true);
-        this.axesYellow = this.createBox(this.mainCube.box, 'yellow',{x: -this.margem, y: 0, z: 0}, true);
-        this.axesGreen = this.createBox(this.mainCube.box, 'green',{x: 0, y: 0, z: -this.margem}, true);
 
-        this.axesRed.box.material.setValues({
-            map: this.textureLoader.load(arrowLeftBackground)
-        })
-        this.axesPurple.box.material.setValues({
-            map: this.textureLoader.load(arrowUpBackground)
-        })
-        this.axesGray.box.material.setValues({
-            map: this.textureLoader.load(arrowRightBackground)
-        })
-        this.axesBrown.box.material.setValues({
-            map: this.textureLoader.load(arrowUpBackground)
-        })
-        this.axesYellow.box.material.setValues({
-            map: this.textureLoader.load(arrowUpBackground)
-        })
-        this.axesGreen.box.material.setValues({
-            map: this.textureLoader.load(arrowUpBackground)
-        })
+        this.axesRed = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'red'),{x: 0, y: this.margem, z: 0}, true);
+        this.axesPurple = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'purple'),{x: this.margem, y: 0, z: 0}, true);
+        this.axesGray = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'gray'),{x: 0, y: -this.margem, z: 0}, true);
+        this.axesBrown = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'brown'),{x: 0, y: 0, z: this.margem}, true);
+        this.axesYellow = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'yellow'),{x: -this.margem, y: 0, z: 0}, true);
+        this.axesGreen = this.createBox(this.mainCube.box, renderMaterialByNumberCube(5, 'green'),{x: 0, y: 0, z: -this.margem}, true);
 
-        // names
+        // /**
+        //  * Suport Material
+        // */
+        // this.axesRed = this.createBox(this.mainCube.box, 'red',{x: 0, y: this.margem, z: 0}, true);
+        // this.axesPurple = this.createBox(this.mainCube.box, 'purple',{x: this.margem, y: 0, z: 0}, true);
+        // this.axesGray = this.createBox(this.mainCube.box, 'gray',{x: 0, y: -this.margem, z: 0}, true);
+        // this.axesBrown = this.createBox(this.mainCube.box, '#3fc7cc',{x: 0, y: 0, z: this.margem}, true);
+        // this.axesYellow = this.createBox(this.mainCube.box, 'yellow',{x: -this.margem, y: 0, z: 0}, true);
+        // this.axesGreen = this.createBox(this.mainCube.box, 'green',{x: 0, y: 0, z: -this.margem}, true);
+        // this.axesRed.box.material.setValues({map: this.textureLoader.load(arrowLeftBackground)})
+        // this.axesPurple.box.material.setValues({map: this.textureLoader.load(arrowUpBackground)})
+        // this.axesGray.box.material.setValues({map: this.textureLoader.load(arrowRightBackground)})
+        // this.axesBrown.box.material.setValues({map: this.textureLoader.load(arrowUpBackground)})
+        // this.axesYellow.box.material.setValues({map: this.textureLoader.load(arrowUpBackground)})
+        // this.axesGreen.box.material.setValues({map: this.textureLoader.load(arrowUpBackground)})
+
+
+        // AXES
         this.axesRed.axes.name = this.positionAxes.axesRed.name;
         this.axesPurple.axes.name = this.positionAxes.axesPurple.name;
         this.axesGray.axes.name = this.positionAxes.axesGray.name;
@@ -166,71 +158,163 @@ export default class RenderCube {
         this.axesGreen.axes.name = this.positionAxes.axesGreen.name;
 
         // AxesPurple
-        this.box1 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[1]);
-        this.box2 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[2]); // #eb43eb
-        this.box3 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[3]);
-        this.box4 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[4]);
-        this.box6 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[6]);
-        this.box7 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[7]);
-        this.box8 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[8]);
-        this.box9 = this.createBox(this.axesPurple.axes, 'purple',this.positionAxes.axesPurple[9]);
+        // this.box1 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(1, 'purple'),this.positionAxes.axesPurple[1]);
+        // this.box2 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(2, 'purple'),this.positionAxes.axesPurple[2]);
+        // this.box3 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(3, 'purple'),this.positionAxes.axesPurple[3]);
+        this.box4 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(4, 'purple'),this.positionAxes.axesPurple[4]);
+        this.box6 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(6, 'purple'),this.positionAxes.axesPurple[6]);
+        // this.box7 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(7, 'purple'),this.positionAxes.axesPurple[7]);
+        // this.box8 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(8, 'purple'),this.positionAxes.axesPurple[8]);
+        // this.box9 = this.createBox(this.axesPurple.axes, renderMaterialByNumberCube(9, 'purple'),this.positionAxes.axesPurple[9]);
 
         // AxesYellow
-        this.boxYellow1 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[1]);
-        this.boxYellow2 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[2]); //#b9b908
-        this.boxYellow3 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[3]);
-        this.boxYellow4 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[4]);
-        this.boxYellow6 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[6]);
-        this.boxYellow7 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[7]);
-        this.boxYellow8 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[8]);
-        this.boxYellow9 = this.createBox(this.axesYellow.axes, 'yellow',this.positionAxes.axesYellow[9]);
+        // this.boxYellow1 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(1, 'yellow'),this.positionAxes.axesYellow[1]);
+        // this.boxYellow2 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(2, 'yellow'),this.positionAxes.axesYellow[2]);
+        // this.boxYellow3 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(3, 'yellow'),this.positionAxes.axesYellow[3]);
+        this.boxYellow4 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(4, 'yellow'),this.positionAxes.axesYellow[4]);
+        this.boxYellow6 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(6, 'yellow'),this.positionAxes.axesYellow[6]);
+        // this.boxYellow7 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(7, 'yellow'),this.positionAxes.axesYellow[7]);
+        // this.boxYellow8 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(8, 'yellow'),this.positionAxes.axesYellow[8]);
+        // this.boxYellow9 = this.createBox(this.axesYellow.axes, renderMaterialByNumberCube(9, 'yellow'),this.positionAxes.axesYellow[9]);
+
 
         // AxesGreen
-        this.boxGreen2 = this.createBox(this.axesGreen.axes, 'green',this.positionAxes.axesGreen[2]); //#06ab06
-        this.boxGreen8 = this.createBox(this.axesGreen.axes, 'green',this.positionAxes.axesGreen[8]);
+        // this.boxGreen1 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(1, 'green'),this.positionAxes.axesGreen[1]);
+        // this.boxGreen2 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(2, 'green'),this.positionAxes.axesGreen[2]);
+        // this.boxGreen3 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(3, 'green'),this.positionAxes.axesGreen[3]);
+        // this.boxGreen4 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(4, 'green'),this.positionAxes.axesGreen[4]);
+        // this.boxGreen6 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(6, 'green'),this.positionAxes.axesGreen[6]);
+        // this.boxGreen7 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(7, 'green'),this.positionAxes.axesGreen[7]);
+        // this.boxGreen8 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(8, 'green'),this.positionAxes.axesGreen[8]);
+        // this.boxGreen9 = this.createBox(this.axesGreen.axes, renderMaterialByNumberCube(9, 'green'),this.positionAxes.axesGreen[9]);
+
 
         // AxesBrown
-        this.boxBrown2 = this.createBox(this.axesBrown.axes, '#773838',this.positionAxes.axesBrown[2]);
-        this.boxBrown8 = this.createBox(this.axesBrown.axes, 'brown',this.positionAxes.axesBrown[8]);
+        // this.boxBrown1 = this.createBox(this.axesBrown.axes, boxBrownMaterial1,this.positionAxes.axesBrown[1]);
+        // this.boxBrown1 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(1, 'brown'),this.positionAxes.axesBrown[1]);
+        // this.boxBrown2 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(2, 'brown'),this.positionAxes.axesBrown[2]);
+        // this.boxBrown3 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(3, 'brown'),this.positionAxes.axesBrown[3]);
+        // this.boxBrown4 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(4, 'brown'),this.positionAxes.axesBrown[4]);
+        // this.boxBrown6 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(6, 'brown'),this.positionAxes.axesBrown[6]);
+        // this.boxBrown7 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(7, 'brown'),this.positionAxes.axesBrown[7]);
+        // this.boxBrown8 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(8, 'brown'),this.positionAxes.axesBrown[8]);
+        // this.boxBrown9 = this.createBox(this.axesBrown.axes, renderMaterialByNumberCube(9, 'brown'),this.positionAxes.axesBrown[9]);
 
-        // test
+        // AXES RED
+        this.boxRed1 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(1, 'red'),this.positionAxes.axesRed[1]);
+        this.boxRed2 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(2, 'red'),this.positionAxes.axesRed[2]);
+        this.boxRed3 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(3, 'red'),this.positionAxes.axesRed[3]);
+        this.boxRed4 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(4, 'red'),this.positionAxes.axesRed[4]);
+        this.boxRed6 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(6, 'red'),this.positionAxes.axesRed[6]);
+        this.boxRed7 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(7, 'red'),this.positionAxes.axesRed[7]);
+        this.boxRed8 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(8, 'red'),this.positionAxes.axesRed[8]);
+        this.boxRed9 = this.createBox(this.axesRed.axes, renderMaterialByNumberCube(9, 'red'),this.positionAxes.axesRed[9]);
+
+        // AXES GRAY
+        this.boxGray1 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(1, 'gray'),this.positionAxes.axesGray[1]);
+        this.boxGray2 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(2, 'gray'),this.positionAxes.axesGray[2]);
+        this.boxGray3 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(3, 'gray'),this.positionAxes.axesGray[3]);
+        this.boxGray4 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(4, 'gray'),this.positionAxes.axesGray[4]);
+        this.boxGray6 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(6, 'gray'),this.positionAxes.axesGray[6]);
+        this.boxGray7 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(7, 'gray'),this.positionAxes.axesGray[7]);
+        this.boxGray8 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(8, 'gray'),this.positionAxes.axesGray[8]);
+        this.boxGray9 = this.createBox(this.axesGray.axes, renderMaterialByNumberCube(9, 'gray'),this.positionAxes.axesGray[9]);
 
         this.guiAxesAction()
 
-        setInterval(() => {
-            let colorName = [
-                'Red',
-                'Gray',
-                'Green',
-                'Yellow',
-                'Purple',
-                'Brown'
-            ]
-            this.renderAction(this[`axes${colorName[Math.floor(Math.random() * colorName.length)]}`])
-        },800)
+        // setInterval(() => {
+        //     let colorName = [
+        //         'Red',
+        //         'Gray',
+        //         'Green',
+        //         'Yellow',
+        //         'Purple',
+        //         'Brown'
+        //     ]
+        //     let newPosition = Math.floor(Math.random() * colorName.length)
+
+        //     while (newPosition === this.lastPosition) {
+        //         newPosition = Math.floor(Math.random() * colorName.length)
+        //     }
+
+        //     this.renderAction(this[`axes${colorName[newPosition]}`])
+        //     this.lastPosition = newPosition
+        // },this.timeAnimation+100)
 
         return this;
     }
+
+    // Função para iniciar a animação de rotação suave
+    animateRotation(object, axis, startAngleI, endAngle, duration) {
+        let x = 0, y = 0 , z = 0;
+
+        // Calcular o ângulo inicial
+        const startAngle = startAngleI;
+
+        // Calcular a mudança de ângulo
+        const deltaAngle = endAngle - startAngle;
+        console.log('startAngle: '+startAngle);
+        console.log('deltaAngle: '+deltaAngle);
+        console.log('axis: '+axis);
+        console.log(object);
+
+        // Tempo inicial da animação
+        let startTime = null;
+
+        // Função de atualização para animar a rotação
+        function update(time) {
+            // Se o tempo inicial não estiver definido, defina-o como o tempo atual
+            if (!startTime) {
+                startTime = time;
+            }
+
+            // Calcular o progresso da animação
+            const elapsedTime = time - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+
+            // Calcular o novo ângulo de rotação
+            const newAngle = startAngle + deltaAngle * progress;
+
+            // Atualizar a rotação do objeto
+            if (axis === 'x') x = THREE.MathUtils.degToRad(newAngle)
+            if (axis === 'y') y = THREE.MathUtils.degToRad(newAngle)
+            if (axis === 'z') z = THREE.MathUtils.degToRad(newAngle)
+            const euler = new THREE.Euler(x,y,z, "XYZ")
+            object.setRotationFromEuler(euler)
+
+            // Se a animação ainda não estiver concluída, continuar a atualização
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+
+        // Iniciar a animação
+        requestAnimationFrame(update);
+    }
+
     guiAxesAction() {
         let degree = 90;
 
         this.gui.add(this.options,'ActionPurple').onChange(value => {
             this.renderAction(this.axesPurple);
         });
+        this.gui.add(this.options,'ActionPurpleVoltar').onChange(value => {
+            this.renderAction(this.axesPurple, 'left');
+        });
         this.gui.add(this.options,'ActionRed').onChange(value => {
             this.renderAction(this.axesRed);
-            console.log("AFTER ROTATE Red: "+this.determineNorthDirection(this.zRed));
-            console.log("AFTER ROTATE Red: "+this.getNumberCubeByAngle(3,this.axesRed));
-            console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesRed.axes.rotation.y));
+            // // console.log("AFTER ROTATE Red: "+this.determineNorthDirection(this.zRed));
+            // console.log("AFTER ROTATE Red: "+this.getNumberCubeByAngle(3,this.axesRed));
+            // console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesRed.axes.rotation.y));
         });
         this.gui.add(this.options,'ActionGray').onChange(value => {
             this.renderAction(this.axesGray);
         });
         this.gui.add(this.options,'ActionBrown').onChange(value => {
             this.renderAction(this.axesBrown);
-            console.log("AFTER ROTATE Brown: "+this.determineNorthDirection(this.zBrown));
-            console.log("AFTER ROTATE Brown: "+this.getNumberCubeByAngle(3,this.axesBrown));
-            console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesBrown.axes.rotation.z));
+            // console.log("AFTER ROTATE Brown: "+this.determineNorthDirection(this.zBrown));
+            // console.log("AFTER ROTATE Brown: "+this.getNumberCubeByAngle(3,this.axesBrown));
+            // console.log("AFTER ROTATE Degree: "+ THREE.MathUtils.radToDeg(this.axesBrown.axes.rotation.z));
         });
         this.gui.add(this.options,'ActionYellow').onChange(value => {
             this.renderAction(this.axesYellow);
@@ -241,15 +325,15 @@ export default class RenderCube {
     }
     renderAction(axesColor, direction = 'right') {
         this.moveImproved(axesColor.axes.name);
-        // console.log('O que está Direction: ' + this.determineNorthDirection(this.zBrown));
-        let degree = 90;
-        let degreeCurrent = this[`z${axesColor.axes.name}`]
-        console.log('dedegreeCurrent: ' + degreeCurrent);
+        // // console.log('O que está Direction: ' + this.determineNorthDirection(this.zBrown));
+        let degree = direction === 'right' ? 90 : -90;
+        let degreeAxisCurrent = this[`zAxis${axesColor.axes.name}`]
+        // console.log('dedegreeCurrent: ' + degreeCurrent);
         // rule to degree
         this[`z${axesColor.axes.name}`] += THREE.MathUtils.degToRad(degree);
-        if (Math.abs(THREE.MathUtils.radToDeg(this[`z${axesColor.axes.name}`])) === 360 ) {
-            this[`z${axesColor.axes.name}`] = 0;
-        }
+        // if (Math.abs(THREE.MathUtils.radToDeg(this[`z${axesColor.axes.name}`])) === 360 ) {
+        //     this[`z${axesColor.axes.name}`] = 0;
+        // }
 
         // rule to invert degree
         const invertSignalRule = [this.axesRed.axes.name, this.axesBrown.axes.name, this.axesPurple.axes.name]
@@ -258,28 +342,12 @@ export default class RenderCube {
         }
 
         this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree)
-        if (Math.abs(this[`zAxis${axesColor.axes.name}`]) === 360 ) {
-            this[`zAxis${axesColor.axes.name}`] = 0;
-        }
-        console.log('this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree): '+this[`zAxis${axesColor.axes.name}`]);
-        console.log('this[`zAxis${axesColor.axes.name}`] = (this[`zAxis${axesColor.axes.name}`] + degree): '+THREE.MathUtils.radToDeg(this[`z${axesColor.axes.name}`]));
-        // decide which axis i will rotate
-        let x = 0, y = 0 , z = 0;
-        if ([this.axesYellow.axes.name, this.axesPurple.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            // x = degreeCurrent + (THREE.MathUtils.degToRad(degree))
-            x = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
-        }
-        if ([this.axesRed.axes.name, this.axesGray.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            // y = degreeCurrent + (THREE.MathUtils.degToRad(degree))
-            y = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
-        }
-        if ([this.axesGreen.axes.name, this.axesBrown.axes.name].indexOf(axesColor.axes.name) !== -1) {
-            // z = degreeCurrent + (THREE.MathUtils.degToRad(degree))
-            z = THREE.MathUtils.degToRad(this[`zAxis${axesColor.axes.name}`])
-        }
+        let whichAxis = 'x'
+        whichAxis = [this.axesYellow.axes.name, this.axesPurple.axes.name].indexOf(axesColor.axes.name) !== -1 ? 'x': whichAxis
+        whichAxis = [this.axesRed.axes.name, this.axesGray.axes.name].indexOf(axesColor.axes.name) !== -1 ? 'y': whichAxis
+        whichAxis = [this.axesGreen.axes.name, this.axesBrown.axes.name].indexOf(axesColor.axes.name) !== -1 ? 'z': whichAxis
 
-        const euler = new THREE.Euler(x,y,z, "XYZ")
-        axesColor.axes.setRotationFromEuler(euler)
+        this.animateRotation(axesColor.axes, whichAxis, degreeAxisCurrent, this[`zAxis${axesColor.axes.name}`], this.timeAnimation);
     }
 
     /**
@@ -301,9 +369,6 @@ export default class RenderCube {
      * 0º <- [4][C][6] <- [8][C][N] <- [6][C][4] <- [N][C][8]
      *       [7][8][9]    [9][6][3]    [3][N][1]    [1][4][7]
      */
-    getNumberCubeByAngleFixColorInverted(numberCube, axesColor, invert = false) {
-
-    }
     getNumberCubeByAngle(numberCube, axesColor, invert = false) {
         // rule to invert degree
         let invertInvertedAngle = false
@@ -313,10 +378,8 @@ export default class RenderCube {
         }
 
         let direction = this.determineNorthDirection(this[`z${axesColor.axes.name}`]);
-        // if (invertInvertedAngle && direction === 'right') direction = 'left'
-        // if (invertInvertedAngle && direction === 'left') direction = 'right'
 
-        console.log('DIRECTION #X#: ' + direction);
+        // console.log(axesColor.axes.name+' (DIRECTION #X#: ' + direction);
         if (direction === 'top') return numberCube;
         if (direction === 'right') {
             if (invert) {
@@ -407,11 +470,12 @@ export default class RenderCube {
      *  return 'top'|'right'|'bottom'|'left'
      */
     determineNorthDirection(eulerAxis) {
-        const angle = THREE.MathUtils.radToDeg(eulerAxis)
-        if (angle === 0 || angle === -0) return 'top';
-        if (angle === 90 || angle === -270) return 'right';
-        if (angle === 180 || angle === -180) return 'bottom';
-        if (angle === 270 || angle === -90) return 'left';
+        const angle = THREE.MathUtils.radToDeg(eulerAxis).toFixed()
+        if (Math.abs(angle) === 0 || Math.abs(angle%360) === 0 ) return 'top';
+        if (angle % 360 === -270 || angle % 360 === 90) return 'right';
+        if (Math.abs(angle) === 180 || Math.abs(angle%360) === 180) return 'bottom';
+        if (angle % 360 === 270 || angle % 360 === -90) return 'left';
+        console.log("ERRO DIRECAO nao found: "+angle);
     }
 
     searchCube(related, arrayAxes, numberPosition) {
@@ -424,30 +488,30 @@ export default class RenderCube {
              * Default is when 2 is at top
              */
             const convertNumberRelatedToDefault = this.getNumberCubeByAngle(numberPosition,this[`axes${related}`], true)
-            console.log('Related: ' + related+' numero desejado desse eixo: '+numberPosition);
-            console.log('Convertido: '+convertNumberRelatedToDefault);
-            console.log('Estou na procura de quem?: ' + arrayAxes[i].axes.name);
-            console.log('Name Related: '+nameRelated);
+            // console.log('Related: ' + related+' numero desejado desse eixo: '+numberPosition);
+            // console.log('Convertido: '+convertNumberRelatedToDefault);
+            // console.log('Estou na procura de quem?: ' + arrayAxes[i].axes.name);
+            // console.log('Name Related: '+nameRelated);
             let currentPositionAxes = this.positionAxes[`axes${nameRelated}`];
 
             let relation = this.positionRelation[relationName];
 
-            console.log('relation', relation);
+            // console.log('relation', relation);
             let numberCubeThisCurrentAxes = relation[convertNumberRelatedToDefault];
-            console.log('Numero pego da relacao: ' + numberCubeThisCurrentAxes);
+            // console.log('Numero pego da relacao: ' + numberCubeThisCurrentAxes);
 
             if (numberCubeThisCurrentAxes) {
                 for (let iterate = 0; iterate < arrayAxes[i].axes.children.length; iterate++) {
                     const searchCube = arrayAxes[i].axes.children[iterate];
                     let correctNumber = this.getNumberCubeByAngle(numberCubeThisCurrentAxes,arrayAxes[i]);
-                    console.log('correctNumber', correctNumber);
-                    console.log(arrayAxes[i].axes);
-                    // console.log('currentPositionAxes[correctNumber]');
-                    // console.log(currentPositionAxes[correctNumber]);
+                    // console.log('correctNumber', correctNumber);
+                    // console.log(arrayAxes[i].axes);
+                    // // console.log('currentPositionAxes[correctNumber]');
+                    // // console.log(currentPositionAxes[correctNumber]);
 
                     let {x,y,z} = currentPositionAxes[correctNumber];
-                    console.log({x,y,z});
-                    console.log({x: searchCube.position.x,y: searchCube.position.y,z: searchCube.position.z});
+                    // console.log({x,y,z});
+                    // console.log({x: searchCube.position.x,y: searchCube.position.y,z: searchCube.position.z});
                     if (searchCube.position.x == x && searchCube.position.y == y && searchCube.position.z == z  ) {
                         foundCube = searchCube;
                         arrayAxes[i].axes.remove(foundCube)
@@ -531,7 +595,7 @@ export default class RenderCube {
                 }
             })
         }
-        console.log('Find current cubes in axes '+axesName, cubes)
+        // console.log('Find current cubes in axes '+axesName, cubes)
         if (Object.keys(this.positionAxes[`axes${axesName}`]).length !== 8) {
             // which cubes are they missing?
             for (let i = 1; i <= 9; i++) {
@@ -543,12 +607,12 @@ export default class RenderCube {
                     return this[`axes${item}`]
                 })
                 cubes[i] = this.searchCube(axesName,axesColorRelated, i);
-                console.log('Found Cube', cubes[i])
+                // console.log('Found Cube', cubes[i])
                 ajustPosition[i] = this.positionAxes[`axes${axesName}`][i]
-                // console.log('After search: cubes[i]', cubes[i])
+                // // console.log('After search: cubes[i]', cubes[i])
             }
         }
-        console.log('LOGG final quanto cubos foram achados', cubes);
+        // console.log('LOGG final quanto cubos foram achados', cubes);
         for (let i = 1; i <= 9; i++) {
             // axes
             if (i==5) continue;
@@ -568,8 +632,8 @@ export default class RenderCube {
 
     createBox(boxMain = false, color, position = false, axesEnabled = false) {
         const geometric = new THREE.BoxGeometry(this.options.Size,this.options.Size,this.options.Size,this.options.Size);
-        const texture = new THREE.MeshStandardMaterial({color})
-        const box = new THREE.Mesh(geometric, texture)
+        const texture = new THREE.MeshStandardMaterial(typeof color === 'string' ? {color} : {})
+        const box = new THREE.Mesh(geometric, typeof color === 'string' ? texture : color)
 
 
         if (position && !axesEnabled) {

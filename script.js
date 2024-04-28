@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import RenderCube from './cubeRender'
+import RenderCube from './src/MagicCube'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as GUI from 'dat.gui'
 
@@ -52,7 +52,7 @@ scene.add(axesHelper);
 camera.position.set(5,3,18)
 controls.update();
 const renderCube = new RenderCube(scene, gui, camera);
-const {mainCube, axesPurple, axesYellow, axesBrown} = renderCube.render()
+renderCube.render()
 
 window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth / this.window.innerHeight;
@@ -66,7 +66,7 @@ renderer.setClearColor( 0x000000, 0 );
 let speed = 0.005;
 function animate(time) {
     renderer.render(scene, camera)
-    mainCube.box.rotateY(speed)
-    mainCube.box.rotateX(speed)
+    // mainCube.box.rotateY(speed)
+    // mainCube.box.rotateX(speed)
 }
 renderer.setAnimationLoop(animate)
